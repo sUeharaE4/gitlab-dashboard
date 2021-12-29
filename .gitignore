@@ -1,0 +1,13 @@
+.venv
+**/__pycache__
+build/*
+!build/check_style
+!build/docs
+build/docs/*
+!build/docs/make.bat
+!build/docs/Makefile
+!build/docs/source
+build/docs/source/*
+!build/docs/source/conf.py
+!build/docs/source/index.rst
+.coverage

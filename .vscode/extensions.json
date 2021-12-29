@@ -1,0 +1,15 @@
+{
+    "recommendations": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "njpwerner.autodocstring",
+        "saikou9901.evilinspector",
+        "shardulm94.trailing-spaces",
+        "aaron-bond.better-comments",
+        "CoenraadS.bracket-pair-colorizer",
+        "streetsidesoftware.code-spell-checker",
+        "christian-kohler.path-intellisense",
+        "VisualStudioExptTeam.vscodeintellicode",
+        "MS-vsliveshare.vsliveshare"
+    ]
+}

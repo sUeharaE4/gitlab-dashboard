@@ -1,0 +1,47 @@
+[tool.poetry]
+name = "___REPLACE-PROJECT-NAME___"
+version = "___REPLACE-PROJECT-VERSION___"
+description = "this is sample project for use poetry."
+authors = ["___REPLACE-PROJECT-AUTHOR-NAME___"]
+
+[tool.taskipy.tasks]
+test = { cmd = "pytest -vv --durations=0 --log-cli-level=10", help = "runs all tests" }
+test_cov = { cmd = "coverage run -m pytest -vv --durations=0 --junitxml=build/tests/result.xml --cov=tests --cov-report=xml:build/tests/coverage.xml --cov-report=html:build/tests/htmlcov --html=build/tests/report.html", help = "runs all tests and make coverage report" }
+sphinx = { cmd = "task sphinx_apidoc && task sphinx_build", help = "make sphinx doc" }
+check_style = { cmd = "task check_flake8 && task check_flake8_with_output && task check_mypy", help = "check code style" }
+sphinx_apidoc = { cmd = "sphinx-apidoc -M -f -o ./build/docs/source ./src", help = "sub commands for make sphinx doc" }
+sphinx_build = { cmd = "sphinx-build -b html ./build/docs/source/ ./build/docs/build/", help = "sub commands for make sphinx doc" }
+check_flake8 = { cmd = "flake8 ./src --docstring-convention numpy", help= "sub commands for check_style" }
+check_flake8_with_output = { cmd = "flake8 ./src --docstring-convention numpy --format=pylint --output=./build/check_style/flake8.txt", help= "sub commands for check_style" }
+check_mypy = { cmd = "mypy tests ./src --config-file ./mypy.ini", help= "sub commands for check_style" }
+
+[tool.black]
+line-length = 79
+
+[tool.isort]
+profile = "black"
+line_length = 79
+multi_line_output = 3
+
+[tool.poetry.dependencies]
+python = "^3.8"
+taskipy = "^1.8.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+mypy = "^0.910"
+black = "^21.7b0"
+flake8 = "^3.9.2"
+pytest-mock = "^3.6.1"
+pytest-cov = "^2.12.1"
+pytest-randomly = "^3.10.1"
+pytest-html = "^3.1.1"
+Sphinx = "^4.1.2"
+sphinx-autodoc-typehints = "^1.12.0"
+sphinx-rtd-theme = "^0.5.2"
+flake8-docstrings = "^1.6.0"
+isort = "^5.9.3"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
