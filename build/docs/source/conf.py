@@ -19,12 +19,12 @@ sys.path.insert(0, os.path.abspath('../../../'))
 
 # -- Project information -----------------------------------------------------
 
-project = '___REPLACE-PROJECT-NAME___'
+project = 'gitlab-bi'
 copyright = '___REPLACE-COPYRIGHT-YEAR___, ___REPLACE-COPYRIGHT-NAME___'
-author = '___REPLACE-PROJECT-AUTHOR-NAME___'
+author = 'sUeharaE4'
 
 # The full version, including alpha/beta/rc tags
-release = '___REPLACE-PROJECT-VERSION___'
+release = '0.1.0'
 
 
 # -- General configuration ---------------------------------------------------
