@@ -1,4 +1,5 @@
 .venv
+.env
 **/__pycache__
 build/*
 !build/check_style
@@ -11,3 +12,5 @@ build/docs/source/*
 !build/docs/source/conf.py
 !build/docs/source/index.rst
 .coverage
+.app_prop*
+!.app_prop_sample
