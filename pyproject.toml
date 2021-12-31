@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "gitlab-bi"
+name = "gitlab-dashboard"
 version = "0.1.0"
 description = "Create dashboard for checking develop activity of develop team using gitlab."
 authors = ["sUeharaE4"]

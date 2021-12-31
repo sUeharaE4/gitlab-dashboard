@@ -19,8 +19,8 @@ sys.path.insert(0, os.path.abspath('../../../'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'gitlab-bi'
-copyright = '___REPLACE-COPYRIGHT-YEAR___, ___REPLACE-COPYRIGHT-NAME___'
+project = 'gitlab-dashboard'
+copyright = '2021, sUeharaE4'
 author = 'sUeharaE4'
 
 # The full version, including alpha/beta/rc tags

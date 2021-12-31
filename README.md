@@ -1,4 +1,4 @@
-# Gitlab-BI
+# Gitlab-Dashboard
 
 Create a dashboard to visualize the activities of the development team using gitlab.
 
