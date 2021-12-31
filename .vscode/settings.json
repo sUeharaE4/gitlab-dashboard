@@ -8,10 +8,10 @@
   "python.linting.flake8Args": [
     "--exclude=**/tests/*",
     "--max-line-length",
-    "79"
+    "119"
   ],
   "python.formatting.blackArgs": [
-    "--line-length=79"
+    "--line-length=119"
   ],
   "python.linting.mypyEnabled": true,
   "python.linting.pylintEnabled": false,
