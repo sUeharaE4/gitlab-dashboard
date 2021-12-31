@@ -30,3 +30,16 @@ for develop:
 ```bash
 poetry install
 ```
+
+## Set env
+This application reference some environment variables. Please set these vars.
+
+| var           | explain                                                                                                                            |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| APP_EXEC_MODE | mode is used to decide which environment file be read( .app_prop_${APP_EXEC_MODE}). set prod or something you like.                |
+| GITLAB_HOME   | this var is used for only build gitlab container. if you don't have gitlab instance, you can use container. see docker-compose.yml |
+
+```bash
+export APP_EXEC_MODE=test
+export GITLAB_HOME=/svr/gitlab
+```
