@@ -9,7 +9,7 @@ from gitlab.v4.objects.issues import GroupIssue
 from gitlab.v4.objects.merge_requests import GroupMergeRequest, MergeRequest
 from gitlab.v4.objects.projects import GroupProject, Project
 
-from common import GitlabConst
+from common import GitlabConst, errors
 
 
 @dataclass
@@ -24,6 +24,8 @@ class GitlabClient:
         """Set group_id and fetch group."""
         self.gl = Gitlab(GitlabConst.URL, private_token=GitlabConst.TOKEN)
         self.group = self.gl.groups.get(self.group_id)
+        if self.group is None:
+            raise errors.ResourceNotFoundError("group", {"group_id": self.group_id})
 
     def fetch_group_issues(
         self, *, state: Union[str, None] = None, labels: Union[list[str], None] = None
