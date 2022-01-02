@@ -107,4 +107,6 @@ def __filter_issues(
             df = df[df["due_date"] < due_date]
     if labels:
         df = df[df["labels"].idin(labels)]
-    return df.to_frame()
+    if isinstance(df, pd.Series):
+        df = df.to_frame()
+    return df

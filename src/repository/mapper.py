@@ -78,8 +78,10 @@ class GitlabClient:
         return self.group.projects.list(all=True)
 
     def fetch_projects_in_group(self) -> list[Project]:
-        group_pj = self.fetch_group_projects()
-        return [self.fetch_single_project(p.id) for p in group_pj]
+        group_pj_ids = [p.id for p in self.fetch_group_projects()]
+        # fetch_single_project sometimes failed to 500 error. so fetch all pj and filter it
+        pj_list = self.gl.projects.list(all=True)
+        return [p for p in pj_list if p.id in group_pj_ids]
 
     def fetch_commits_in_group_projects(self) -> dict[int, list[ProjectCommit]]:
         """Fetch commits in each projects. May be very heavy."""
