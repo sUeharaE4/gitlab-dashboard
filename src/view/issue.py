@@ -46,7 +46,8 @@ def create_assigned_issue_count_view(
     due_date: Union[tuple[datetime], None] = None,
     labels: Union[list[str], None] = None
 ):
-    # NOTE: due_date is tuple. if len(due_date) == 2, filter between two date. if len(due_date) == 1, filter until due_date.
+    # NOTE: due_date is tuple.
+    #       if len(due_date) == 2, filter between two date. if len(due_date) == 1, filter until due_date.
     # NOTE: create class for filter condition is better.
     st.markdown("## Assigned Issues")
     target_cols = ["id", "project_id", "assignee-username", "labels", "state", "due_date"]

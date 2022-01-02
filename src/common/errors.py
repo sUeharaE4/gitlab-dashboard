@@ -29,4 +29,4 @@ class ResourceNotFoundError(Exception):
     search_condition: dict[str, Any]
 
     def __str__(self) -> str:
-        return f"{target_resource} not found. Search condition is {search_condition}."
+        return f"{self.target_resource} not found. Search condition is {self.search_condition}."
