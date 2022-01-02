@@ -8,6 +8,7 @@ from view import util
 
 
 def create_mergerequest_view(group_id: int):
+    """Create a view of streamlit MRs."""
     # pj_in_groups = list_project(group_id)
     # pj_names = [pj.name for pj in pj_in_groups]
     # target_pj_names = st.multiselect("Select projects to fetch MergeRequests", pj_names, pj_names)
@@ -28,11 +29,13 @@ def create_mergerequest_view(group_id: int):
 
 
 def create_count_of_created_mr_view(mergerequest_df: pd.DataFrame):
+    """Create charts of counting created issues."""
     st.markdown("## Created MergeRequests")
     util.create_count_of_created_view(mergerequest_df)
 
 
 def create_size_view(mergerequest_df: pd.DataFrame):
+    """Create chart to show size of MRs.."""
     st.markdown("## Size of MergeRequests")
     df = mergerequest_df.copy()
 

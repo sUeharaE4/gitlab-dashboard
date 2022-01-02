@@ -65,19 +65,22 @@ class GitlabClient:
         return self.group.mergerequests.list(all=True, state=state)
 
     def fetch_mergerrequests_in_group(self, *, state: Union[str, None] = None) -> list[MergeRequest]:
+        """Fetch mergerequests in group from project."""
         group_mr = self.fetch_group_mergerequests(state=state)
         pj_in_group = self.fetch_projects_in_group([mr.project_id for mr in group_mr])
         id_pj_map = {pj.id: pj for pj in pj_in_group}
         return [id_pj_map[mr.project_id].mergerequests.get(mr.iid) for mr in group_mr]
 
     def fetch_single_project(self, project_id: int) -> Project:
+        """Fetch project."""
         return self.gl.projects.get(project_id)
 
     def fetch_group_projects(self) -> list[GroupProject]:
-        """Fetch groups in this group."""
+        """Fetch projects in this group."""
         return self.group.projects.list(all=True)
 
     def fetch_projects_in_group(self, group_pj_ids: Union[list[int], None] = None) -> list[Project]:
+        """Fetch projects in this group from project list."""
         if group_pj_ids is None:
             group_pj_ids = [p.id for p in self.fetch_group_projects()]
         group_pj_ids = list(set(group_pj_ids))

@@ -12,6 +12,7 @@ from view import util
 
 
 def create_issue_view(group_id: int):
+    """Create streamlit view of issues."""
     df = __fetch_dataset(group_id)
     if df.empty:
         st.error("No issue found in this group.")
@@ -30,11 +31,13 @@ def create_issue_view(group_id: int):
 
 
 def create_count_of_created_issue_view(issue_df: pd.DataFrame):
+    """Create charts of created issues."""
     st.markdown("## Created Issues")
     util.create_count_of_created_view(issue_df)
 
 
 def create_count_of_closed_issue_view(issue_df: pd.DataFrame):
+    """Create charts of closed issues."""
     st.markdown("## Closed Issues")
     closed_df = issue_df[issue_df["state"] == "closed"].copy()
     util.create_count_of_created_view(closed_df)
@@ -48,6 +51,7 @@ def create_assigned_issue_count_view(
     due_date: Union[tuple[datetime.date], None] = None,
     labels: Union[list[str], None] = None
 ):
+    """Create a chart of counting issues for assignees."""
     st.markdown("## Assigned Issues")
     target_cols = ["id", "project_id", "assignee-username", "labels", "state", "due_date"]
     df = __filter_issues(issue_df[target_cols], state=state, project_ids=project_ids, due_date=due_date, labels=labels)
@@ -76,6 +80,7 @@ def create_label_issues_view(
     due_date: Union[tuple[datetime.date], None] = None,
     labels: Union[list[str], None] = None
 ):
+    """Create a chart of issue count by labels."""
     st.markdown("## Issues for each labels")
     target_cols = ["id", "project_id", "labels", "state", "due_date"]
     df = __filter_issues(issue_df[target_cols], state=state, project_ids=project_ids, due_date=due_date, labels=labels)

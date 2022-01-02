@@ -5,7 +5,7 @@ from repository.mapper import GitlabClient
 
 
 def list_project(group_id: int) -> list[Project]:
-    """make list of projects in group.
+    """Make list of projects in group.
 
     Parameters
     ----------
