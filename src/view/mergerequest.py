@@ -74,6 +74,6 @@ def create_size_view(mergerequest_df: pd.DataFrame):
     st.altair_chart(chart, use_container_width=True)
 
 
-@st.cache(allow_output_mutation=True)
+@st.cache(allow_output_mutation=True, suppress_st_warning=True)
 def __fetch_mergerequest_dataset(group_id) -> pd.DataFrame:
     return make_mergerequest_df(group_id, from_streamlit_view=True)
