@@ -8,7 +8,12 @@ from view import util
 
 
 def create_mergerequest_view(group_id: int):
-    df = make_mergerequest_df(group_id)
+    """Create a view of streamlit MRs."""
+    # pj_in_groups = list_project(group_id)
+    # pj_names = [pj.name for pj in pj_in_groups]
+    # target_pj_names = st.multiselect("Select projects to fetch MergeRequests", pj_names, pj_names)
+    # df = make_mergerequest_df(group_id, target_pj_names=target_pj_names, from_streamlit_view=True)
+    df = __fetch_mergerequest_dataset(group_id)
     if df.empty:
         st.error("No merge request found in this group.")
         return
@@ -20,25 +25,32 @@ def create_mergerequest_view(group_id: int):
     create_size_view(filtered_df)
 
     st.markdown("## Detail")
-    util.show_table("All of MergeRequests", df, height=200)
-
-
-def aggregate_created_count(df: pd.DataFrame, unit: str):
-    created_df = df.copy()
-    created_df["created_at"] = util.to_datetime(created_df["created_at"])
-    agg_df = util.count_by_datetime(created_df, "created_at", ["id"], ["count"], unit)
-    agg_df.columns = ["count"]
-    return agg_df.reset_index()
+    util.show_table("All of MergeRequests", df)
 
 
 def create_count_of_created_mr_view(mergerequest_df: pd.DataFrame):
+    """Create charts of counting created issues."""
     st.markdown("## Created MergeRequests")
     util.create_count_of_created_view(mergerequest_df)
 
 
 def create_size_view(mergerequest_df: pd.DataFrame):
+    """Create chart to show size of MRs.."""
     st.markdown("## Size of MergeRequests")
     df = mergerequest_df.copy()
+
+    target_branches = sorted(set(df["target_branch"]))
+    view_target_branches = st.multiselect(
+        "Select target branches you want to see graphs", target_branches, target_branches
+    )
+    df = df[df["target_branch"].isin(view_target_branches)]
+
+    source_branches = sorted(set(df["source_branch"]))
+    view_source_branches = st.multiselect(
+        "Select source branches you want to see graphs", source_branches, source_branches
+    )
+    df = df[df["source_branch"].isin(view_source_branches)]
+
     df["mean_change_files"] = df["total_changed_file_count"] / df["total_commits"]
     df["mean_changes"] = df["total_changes"] / df["total_commits"]
     df["mean_additions"] = df["total_additions"] / df["total_commits"]
@@ -69,6 +81,10 @@ def create_size_view(mergerequest_df: pd.DataFrame):
                 "closed_at",
             ],
         )
-    )
+    ).interactive()
     st.altair_chart(chart, use_container_width=True)
-    print(df[[n for n in df.columns if "mean_" in n]])
+
+
+@st.cache(allow_output_mutation=True, suppress_st_warning=True)
+def __fetch_mergerequest_dataset(group_id) -> pd.DataFrame:
+    return make_mergerequest_df(group_id, from_streamlit_view=True)

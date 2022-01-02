@@ -11,7 +11,6 @@ test_cov = { cmd = "coverage run -m pytest -vv --durations=0 --junitxml=build/te
 sphinx = { cmd = "task sphinx_apidoc && task sphinx_build", help = "make sphinx doc" }
 check_style = { cmd = "task check_flake8 && task check_flake8_with_output && task check_mypy", help = "check code style" }
 check_complexity = { cmd = "cd src && docker run --rm --env CODECLIMATE_CODE=`pwd` --env CODECLIMATE_DEBUG=1 -v `pwd`:/code -v /var/run/docker.sock:/var/run/docker.sock -v /tmp/cc:/tmp/cc codeclimate/codeclimate analyze", help = "check_code complexity use docker image of code climate. this command needs docker." }
-
 sphinx_apidoc = { cmd = "sphinx-apidoc -M -f -o ./build/docs/source ./src", help = "sub commands for make sphinx doc" }
 sphinx_build = { cmd = "sphinx-build -b html ./build/docs/source/ ./build/docs/build/", help = "sub commands for make sphinx doc" }
 check_flake8 = { cmd = "flake8 ./src --docstring-convention numpy", help= "sub commands for check_style" }
@@ -34,6 +33,7 @@ python-dotenv = "^0.19.2"
 streamlit-aggrid = "^0.2.2"
 python-gitlab = "^2.10.1"
 altair = "^4.2.0"
+stqdm = "^0.0.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

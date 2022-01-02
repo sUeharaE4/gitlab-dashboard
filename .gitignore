@@ -2,7 +2,6 @@
 .env
 **/__pycache__
 build/*
-!build/check_style
 !build/docs
 build/docs/*
 !build/docs/make.bat

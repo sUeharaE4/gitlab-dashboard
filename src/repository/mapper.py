@@ -65,21 +65,28 @@ class GitlabClient:
         return self.group.mergerequests.list(all=True, state=state)
 
     def fetch_mergerrequests_in_group(self, *, state: Union[str, None] = None) -> list[MergeRequest]:
+        """Fetch mergerequests in group from project."""
         group_mr = self.fetch_group_mergerequests(state=state)
-        pj_ids = (mr.project_id for mr in group_mr)
-        id_pj_map = {pj_id: self.fetch_single_project(pj_id) for pj_id in pj_ids}
+        pj_in_group = self.fetch_projects_in_group([mr.project_id for mr in group_mr])
+        id_pj_map = {pj.id: pj for pj in pj_in_group}
         return [id_pj_map[mr.project_id].mergerequests.get(mr.iid) for mr in group_mr]
 
     def fetch_single_project(self, project_id: int) -> Project:
+        """Fetch project."""
         return self.gl.projects.get(project_id)
 
     def fetch_group_projects(self) -> list[GroupProject]:
-        """Fetch groups in this group."""
+        """Fetch projects in this group."""
         return self.group.projects.list(all=True)
 
-    def fetch_projects_in_group(self) -> list[Project]:
-        group_pj = self.fetch_group_projects()
-        return [self.fetch_single_project(p.id) for p in group_pj]
+    def fetch_projects_in_group(self, group_pj_ids: Union[list[int], None] = None) -> list[Project]:
+        """Fetch projects in this group from project list."""
+        if group_pj_ids is None:
+            group_pj_ids = [p.id for p in self.fetch_group_projects()]
+        group_pj_ids = list(set(group_pj_ids))
+        # fetch_single_project sometimes failed to 500 error. so fetch all pj and filter it
+        pj_list = self.gl.projects.list(all=True)
+        return [p for p in pj_list if p.id in group_pj_ids]
 
     def fetch_commits_in_group_projects(self) -> dict[int, list[ProjectCommit]]:
         """Fetch commits in each projects. May be very heavy."""
