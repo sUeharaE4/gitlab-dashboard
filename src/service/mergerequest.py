@@ -7,7 +7,9 @@ from common import util
 from repository.mapper import GitlabClient
 
 
-def make_mergerequest_df(group_id: int, *, state: Union[str, None] = None) -> pd.DataFrame:
+def make_mergerequest_df(
+    group_id: int, *, state: Union[str, None] = None, target_pj_names: Union[list[str], None] = None
+) -> pd.DataFrame:
     """Make dataset of group mergerequest.
 
     Parameters
@@ -26,7 +28,10 @@ def make_mergerequest_df(group_id: int, *, state: Union[str, None] = None) -> pd
     # GroupMergeRequest does not have commit info. So get from Project commits.
     # Project.commits.list() has not stats of commit so fetch each single commit.
     group_mr = client.fetch_mergerrequests_in_group(state=state)
-    id_pj_map = {pj.id: pj for pj in client.fetch_projects_in_group([mr.project_id for mr in group_mr])}
+    pj_in_group = client.fetch_projects_in_group([mr.project_id for mr in group_mr])
+    if target_pj_names:
+        pj_in_group = [pj for pj in pj_in_group if pj.name in target_pj_names]
+    id_pj_map = {pj.id: pj for pj in pj_in_group}
 
     mergerequests = []
     for mr in group_mr:

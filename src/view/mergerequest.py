@@ -4,11 +4,14 @@ import pandas as pd
 import streamlit as st
 
 from service.mergerequest import make_mergerequest_df
+from service.project import list_project
 from view import util
 
 
 def create_mergerequest_view(group_id: int):
-    df = make_mergerequest_df(group_id)
+    pj_in_groups = list_project(group_id)
+    target_pj_names = st.multiselect("Select projects", [pj.name for pj in pj_in_groups], [])
+    df = make_mergerequest_df(group_id, target_pj_names=target_pj_names)
     if df.empty:
         st.error("No merge request found in this group.")
         return

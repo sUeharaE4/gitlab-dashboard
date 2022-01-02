@@ -80,6 +80,7 @@ class GitlabClient:
     def fetch_projects_in_group(self, group_pj_ids: Union[list[int], None] = None) -> list[Project]:
         if group_pj_ids is None:
             group_pj_ids = [p.id for p in self.fetch_group_projects()]
+        group_pj_ids = list(set(group_pj_ids))
         # fetch_single_project sometimes failed to 500 error. so fetch all pj and filter it
         pj_list = self.gl.projects.list(all=True)
         return [p for p in pj_list if p.id in group_pj_ids]
