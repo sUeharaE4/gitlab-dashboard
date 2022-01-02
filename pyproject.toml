@@ -32,6 +32,7 @@ python-dotenv = "^0.19.2"
 streamlit-aggrid = "^0.2.2"
 python-gitlab = "^2.10.1"
 altair = "^4.2.0"
+stqdm = "^0.0.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
