@@ -12,7 +12,7 @@ def create_mergerequest_view(group_id: int):
     pj_in_groups = list_project(group_id)
     pj_names = [pj.name for pj in pj_in_groups]
     target_pj_names = st.multiselect("Select projects to fetch MergeRequests", pj_names, pj_names)
-    df = make_mergerequest_df(group_id, target_pj_names=target_pj_names)
+    df = make_mergerequest_df(group_id, target_pj_names=target_pj_names, from_streamlit_view=True)
     if df.empty:
         st.error("No merge request found in this group.")
         return
@@ -75,4 +75,3 @@ def create_size_view(mergerequest_df: pd.DataFrame):
         )
     ).interactive()
     st.altair_chart(chart, use_container_width=True)
-    print(df[[n for n in df.columns if "mean_" in n]])
