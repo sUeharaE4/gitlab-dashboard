@@ -36,13 +36,13 @@ def create_size_view(mergerequest_df: pd.DataFrame):
     st.markdown("## Size of MergeRequests")
     df = mergerequest_df.copy()
 
-    target_branches = set(df["target_branch"])
+    target_branches = sorted(set(df["target_branch"]))
     view_target_branches = st.multiselect(
         "Select target branches you want to see graphs", target_branches, target_branches
     )
     df = df[df["target_branch"].isin(view_target_branches)]
 
-    source_branches = set(df["source_branch"])
+    source_branches = sorted(set(df["source_branch"]))
     view_source_branches = st.multiselect(
         "Select source branches you want to see graphs", source_branches, source_branches
     )

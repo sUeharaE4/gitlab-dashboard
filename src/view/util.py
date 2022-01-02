@@ -42,7 +42,9 @@ def filter_by_projects(df: pd.DataFrame, group_id: int, add_pj_name_col: bool = 
     pj_id_name_map = {v: k for k, v in pj_name_id_map.items()}
 
     st.markdown("## Filter by projects")
-    pj_names = st.multiselect("Select projects you want to see graphs", pj_name_id_map.keys(), pj_name_id_map.keys())
+    pj_names = st.multiselect(
+        "Select projects you want to see graphs", sorted(pj_name_id_map.keys()), pj_name_id_map.keys()
+    )
     pj_ids = [pj_name_id_map[n] for n in pj_names]
     if add_pj_name_col:
         df["project_name"] = df["project_id"].map(pj_id_name_map)
