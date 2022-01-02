@@ -86,4 +86,4 @@ def create_time_count_chart(df: pd.DataFrame, datetime_col: str, unit: str):
     agg_df = agg_df.reset_index()
     x_axis = alt.X(datetime_col, title="datetime")
     y_axis = alt.Y("count", title="count")
-    return alt.Chart(agg_df).mark_bar().encode(x=x_axis, y=y_axis)
+    return alt.Chart(agg_df).mark_bar().encode(x=x_axis, y=y_axis).interactive()

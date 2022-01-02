@@ -73,6 +73,6 @@ def create_size_view(mergerequest_df: pd.DataFrame):
                 "closed_at",
             ],
         )
-    )
+    ).interactive()
     st.altair_chart(chart, use_container_width=True)
     print(df[[n for n in df.columns if "mean_" in n]])
