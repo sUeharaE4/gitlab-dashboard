@@ -19,7 +19,7 @@ def flatten_dict_in_dict(base_dict: dict[str, Union[str, dict[str, Any]]]):
 
 
 def __flatten_dict(key: str, value: Any, drop_keys: list[str], add_dict: dict[str, Any]):
-    if isinstance(key, dict):
+    if isinstance(value, dict):
         drop_keys.append(key)
         for k, v in value.items():
             add_dict[f"{key}-{k}"] = v
