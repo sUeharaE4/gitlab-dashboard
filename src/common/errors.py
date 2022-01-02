@@ -1,6 +1,7 @@
 """Provide Exception classes."""
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 
 @dataclass(frozen=True)
@@ -20,3 +21,12 @@ class SettingNotFoundError(Exception):
             f"{str(self.sample_conf_path)}"
         )
         return msg
+
+
+@dataclass(frozen=True)
+class ResourceNotFoundError(Exception):
+    target_resource: str
+    search_condition: dict[str, Any]
+
+    def __str__(self) -> str:
+        return f"{target_resource} not found. Search condition is {search_condition}."
