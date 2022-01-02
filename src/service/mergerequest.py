@@ -29,7 +29,7 @@ def make_mergerequest_df(
     # Project.commits.list() has not stats of commit so fetch each single commit.
     group_mr = client.fetch_mergerrequests_in_group(state=state)
     pj_in_group = client.fetch_projects_in_group([mr.project_id for mr in group_mr])
-    if target_pj_names:
+    if target_pj_names is not None:
         pj_in_group = [pj for pj in pj_in_group if pj.name in target_pj_names]
     id_pj_map = {pj.id: pj for pj in pj_in_group}
 

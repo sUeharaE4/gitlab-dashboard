@@ -10,7 +10,8 @@ from view import util
 
 def create_mergerequest_view(group_id: int):
     pj_in_groups = list_project(group_id)
-    target_pj_names = st.multiselect("Select projects", [pj.name for pj in pj_in_groups], [])
+    pj_names = [pj.name for pj in pj_in_groups]
+    target_pj_names = st.multiselect("Select projects to fetch MergeRequests", pj_names, pj_names)
     df = make_mergerequest_df(group_id, target_pj_names=target_pj_names)
     if df.empty:
         st.error("No merge request found in this group.")
