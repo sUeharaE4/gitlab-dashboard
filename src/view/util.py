@@ -1,4 +1,6 @@
 """Provide utility functions for make view."""
+from typing import Union
+
 import altair as alt
 import pandas as pd
 import streamlit as st
@@ -56,19 +58,19 @@ def create_count_of_created_view(dataset_df: pd.DataFrame, datetime_col: str = "
     with cnt_bar1:
         st.markdown("Count at quater")
         st.altair_chart(
-            create_time_count_chart(df, datetime_col, "Q"),
+            create_time_count_chart(df, datetime_col, "Q", "project_name"),
             use_container_width=True,
         )
     with cnt_bar2:
         st.markdown("Count at month")
         st.altair_chart(
-            create_time_count_chart(df, datetime_col, "M"),
+            create_time_count_chart(df, datetime_col, "M", "project_name"),
             use_container_width=True,
         )
     with cnt_bar3:
         st.markdown("Count at week")
         st.altair_chart(
-            create_time_count_chart(df, datetime_col, "W"),
+            create_time_count_chart(df, datetime_col, "W", "project_name"),
             use_container_width=True,
         )
 
@@ -78,12 +80,27 @@ def count_by_datetime(df: pd.DataFrame, datetime_col: str, agg_targets: list[str
     return count_df.resample(unit).agg(agg_methods)
 
 
-def create_time_count_chart(df: pd.DataFrame, datetime_col: str, unit: str):
+def create_time_count_chart(df: pd.DataFrame, datetime_col: str, unit: str, color_col: Union[str, None] = None):
+    def aggregate(df: pd.DataFrame, target_col: str, unit: str):
+        agg_df = df[[target_col, df.columns[0]]].set_index(target_col).resample(unit).agg(["count"])
+        agg_df.columns = ["count"]
+        return agg_df
+
     tmp_df = df.copy()
     tmp_df[datetime_col] = to_datetime(tmp_df[datetime_col])
-    agg_df = tmp_df[[datetime_col, tmp_df.columns[0]]].set_index(datetime_col).resample(unit).agg(["count"])
-    agg_df.columns = ["count"]
+    tool_tips = ["count"]
+    if color_col:
+        tool_tips.append(color_col)
+        items = set(tmp_df[color_col].to_list())
+        agg_dfs = []
+        for item in items:
+            tmp_agg = aggregate(tmp_df[tmp_df[color_col] == item], datetime_col, unit)
+            tmp_agg[color_col] = item
+            agg_dfs.append(tmp_agg)
+        agg_df = pd.concat(agg_dfs)
+    else:
+        agg_df = aggregate(tmp_df, datetime_col, unit)
     agg_df = agg_df.reset_index()
     x_axis = alt.X(datetime_col, title="datetime")
     y_axis = alt.Y("count", title="count")
-    return alt.Chart(agg_df).mark_bar().encode(x=x_axis, y=y_axis).interactive()
+    return alt.Chart(agg_df).mark_bar().encode(x=x_axis, y=y_axis, color=color_col, tooltip=tool_tips).interactive()

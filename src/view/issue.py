@@ -52,12 +52,18 @@ def create_assigned_issue_count_view(
     df = __filter_issues(issue_df[target_cols], state=state, project_ids=project_ids, due_date=due_date, labels=labels)
 
     df["assignee-username"] = df["assignee-username"].fillna("Not Assigned!")
+    df["count"] = 0
     agg_df = df.groupby(["assignee-username", "state"], as_index=False).count()
     chart = (
         alt.Chart(agg_df)
         .mark_bar()
-        .encode(x=alt.X("assignee-username", title="assignee"), y=alt.Y("id", title="issue count"), color="state")
-    )
+        .encode(
+            x=alt.X("assignee-username", title="assignee"),
+            y=alt.Y("id", title="issue count"),
+            color="state",
+            tooltip=["assignee-username", "state", "count"],
+        )
+    ).interactive()
     st.altair_chart(chart)
 
 
@@ -73,13 +79,19 @@ def create_label_issues_view(
     target_cols = ["id", "project_id", "labels", "state", "due_date"]
     df = __filter_issues(issue_df[target_cols], state=state, project_ids=project_ids, due_date=due_date, labels=labels)
     df = df.explode("labels").fillna("No label set!")
+    df["count"] = 0
 
     agg_df = df.groupby(["labels", "state"], as_index=False).count()
     chart = (
         alt.Chart(agg_df)
         .mark_bar()
-        .encode(x=alt.X("labels", title="label"), y=alt.Y("id", title="issue count"), color="state")
-    )
+        .encode(
+            x=alt.X("labels", title="label"),
+            y=alt.Y("id", title="issue count"),
+            color="state",
+            tooltip=["labels", "state", "count"],
+        )
+    ).interactive()
     st.altair_chart(chart)
 
 
