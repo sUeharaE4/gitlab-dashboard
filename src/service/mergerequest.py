@@ -2,6 +2,8 @@
 from typing import Union
 
 import pandas as pd
+from gitlab.v4.objects.commits import ProjectCommit
+from gitlab.v4.objects.projects import Project
 from stqdm import stqdm
 from tqdm import tqdm
 
@@ -45,23 +47,28 @@ def make_mergerequest_df(
 
     mergerequests = []
     for mr in pg_bar(group_mr, desc="Collect commits from MRs"):
-        if mr.project_id not in id_pj_map:
-            continue
         tmp_mergerequest = mr.__dict__["_attrs"].copy()
         tmp_mergerequest["group_id"] = group_id
         util.flatten_dict_in_dict(tmp_mergerequest)
-        mr_commits = mr.commits(all=True)
-        mr_commit_stat = {"total_commits": len(mr_commits)}
-        for mr_commit in mr_commits:
-            commit = id_pj_map[mr.project_id].commits.get(mr_commit.short_id)
-            mr_commit_stat["total_changed_file_count"] = mr_commit_stat.get("total_changed_file_count", 0) + len(
-                mr_commit.diff()
-            )
-            if commit:
-                stats = commit.stats
-                mr_commit_stat["total_additions"] = mr_commit_stat.get("total_additions", 0) + stats["additions"]
-                mr_commit_stat["total_deletions"] = mr_commit_stat.get("total_deletions", 0) + stats["deletions"]
-                mr_commit_stat["total_changes"] = mr_commit_stat.get("total_changes", 0) + stats["total"]
+        mr_project = id_pj_map[mr.project_id]
+        mr_commit_stat = __make_commit_stats(mr.commits(all=True), mr_project)
         tmp_mergerequest.update(mr_commit_stat)
         mergerequests.append(tmp_mergerequest)
     return pd.DataFrame.from_dict(mergerequests)
+
+
+def __make_commit_stats(mr_commits: list[ProjectCommit], project: Project) -> dict:
+    mr_commit_stat = {"total_commits": len(mr_commits)}
+    mr_commit_stat["total_changed_file_count"] = 0
+    mr_commit_stat["total_additions"] = 0
+    mr_commit_stat["total_deletions"] = 0
+    mr_commit_stat["total_changes"] = 0
+
+    for mr_commit in mr_commits:
+        commit = project.commits.get(mr_commit.short_id)
+        mr_commit_stat["total_changed_file_count"] += len(mr_commit.diff())
+        stats = commit.stats
+        mr_commit_stat["total_additions"] += stats["additions"]
+        mr_commit_stat["total_deletions"] += stats["deletions"]
+        mr_commit_stat["total_changes"] += stats["total"]
+    return mr_commit_stat
