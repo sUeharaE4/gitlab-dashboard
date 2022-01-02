@@ -2,13 +2,19 @@
 from typing import Union
 
 import pandas as pd
+from stqdm import stqdm
+from tqdm import tqdm
 
 from common import util
 from repository.mapper import GitlabClient
 
 
 def make_mergerequest_df(
-    group_id: int, *, state: Union[str, None] = None, target_pj_names: Union[list[str], None] = None
+    group_id: int,
+    *,
+    state: Union[str, None] = None,
+    target_pj_names: Union[list[str], None] = None,
+    from_streamlit_view: bool = False
 ) -> pd.DataFrame:
     """Make dataset of group mergerequest.
 
@@ -25,6 +31,9 @@ def make_mergerequest_df(
         DataFrame each row has single mergerequest infomation.
     """
     client = GitlabClient(group_id)
+    pg_bar = tqdm
+    if from_streamlit_view:
+        pg_bar = stqdm
     # GroupMergeRequest does not have commit info. So get from Project commits.
     # Project.commits.list() has not stats of commit so fetch each single commit.
     group_mr = client.fetch_mergerrequests_in_group(state=state)
@@ -32,9 +41,12 @@ def make_mergerequest_df(
     if target_pj_names is not None:
         pj_in_group = [pj for pj in pj_in_group if pj.name in target_pj_names]
     id_pj_map = {pj.id: pj for pj in pj_in_group}
+    group_mr = [mr for mr in group_mr if mr.project_id in id_pj_map]
 
     mergerequests = []
-    for mr in group_mr:
+    for mr in pg_bar(group_mr, desc="Collect commits from MRs"):
+        if mr.project_id not in id_pj_map:
+            continue
         tmp_mergerequest = mr.__dict__["_attrs"].copy()
         tmp_mergerequest["group_id"] = group_id
         util.flatten_dict_in_dict(tmp_mergerequest)
