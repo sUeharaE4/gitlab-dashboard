@@ -6,12 +6,13 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
+from common import Const
 from service.issue import make_issue_df
 from view import util
 
 
 def create_issue_view(group_id: int):
-    df = make_issue_df(group_id)
+    df = __fetch_dataset(group_id)
     if df.empty:
         st.error("No issue found in this group.")
         return
@@ -122,3 +123,8 @@ def __filter_issues(
     if isinstance(df, pd.Series):
         df = df.to_frame()
     return df
+
+
+@st.cache(ttl=Const.ST_CACHE_TIME_SHORT, suppress_st_warning=True, allow_output_mutation=True)
+def __fetch_dataset(group_id: int) -> pd.DataFrame:
+    return make_issue_df(group_id)

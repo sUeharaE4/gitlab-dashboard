@@ -4,15 +4,15 @@ import pandas as pd
 import streamlit as st
 
 from service.mergerequest import make_mergerequest_df
-from service.project import list_project
 from view import util
 
 
 def create_mergerequest_view(group_id: int):
-    pj_in_groups = list_project(group_id)
-    pj_names = [pj.name for pj in pj_in_groups]
-    target_pj_names = st.multiselect("Select projects to fetch MergeRequests", pj_names, pj_names)
-    df = make_mergerequest_df(group_id, target_pj_names=target_pj_names, from_streamlit_view=True)
+    # pj_in_groups = list_project(group_id)
+    # pj_names = [pj.name for pj in pj_in_groups]
+    # target_pj_names = st.multiselect("Select projects to fetch MergeRequests", pj_names, pj_names)
+    # df = make_mergerequest_df(group_id, target_pj_names=target_pj_names, from_streamlit_view=True)
+    df = __fetch_mergerequest_dataset(group_id)
     if df.empty:
         st.error("No merge request found in this group.")
         return
@@ -72,3 +72,8 @@ def create_size_view(mergerequest_df: pd.DataFrame):
         )
     ).interactive()
     st.altair_chart(chart, use_container_width=True)
+
+
+@st.cache(allow_output_mutation=True)
+def __fetch_mergerequest_dataset(group_id) -> pd.DataFrame:
+    return make_mergerequest_df(group_id, from_streamlit_view=True)
