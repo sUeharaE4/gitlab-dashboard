@@ -24,25 +24,22 @@ def create_mergerequest_view(group_id: int):
     create_size_view(filtered_df)
 
     st.markdown("## Detail")
-    util.show_table("All of MergeRequests", df, height=200)
+    util.show_table("All of MergeRequests", df)
 
 
-def aggregate_created_count(df: pd.DataFrame, unit: str):
-    created_df = df.copy()
-    created_df["created_at"] = util.to_datetime(created_df["created_at"])
-    agg_df = util.count_by_datetime(created_df, "created_at", ["id"], ["count"], unit)
-    agg_df.columns = ["count"]
-    return agg_df.reset_index()
-
-
+@st.cache(ttl=60 * 5)
 def create_count_of_created_mr_view(mergerequest_df: pd.DataFrame):
     st.markdown("## Created MergeRequests")
     util.create_count_of_created_view(mergerequest_df)
 
 
+@st.cache(ttl=60 * 5)
 def create_size_view(mergerequest_df: pd.DataFrame):
     st.markdown("## Size of MergeRequests")
     df = mergerequest_df.copy()
+    branches = set(df["target_branch"])
+    target_branches = st.multiselect("Select branches you want to see graphs", branches, branches)
+    df = df[df["target_branch"].isin(target_branches)]
     df["mean_change_files"] = df["total_changed_file_count"] / df["total_commits"]
     df["mean_changes"] = df["total_changes"] / df["total_commits"]
     df["mean_additions"] = df["total_additions"] / df["total_commits"]
