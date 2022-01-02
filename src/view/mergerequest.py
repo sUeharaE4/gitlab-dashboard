@@ -9,7 +9,12 @@ from view import util
 
 def create_mergerequest_view(group_id: int):
     df = make_mergerequest_df(group_id)
+    if df.empty:
+        st.error("No merge request found in this group.")
+        return
     filtered_df = util.filter_by_projects(df, group_id)
+    if filtered_df.empty:
+        st.error("No merge request found in this project.")
 
     create_count_of_created_mr_view(filtered_df)
     create_size_view(filtered_df)

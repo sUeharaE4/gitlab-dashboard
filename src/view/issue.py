@@ -8,7 +8,14 @@ from view import util
 
 def create_issue_view(group_id: int):
     df = make_issue_df(group_id)
+    if df.empty:
+        st.error("No issue found in this group.")
+        return
     filtered_df = util.filter_by_projects(df, group_id)
+    if filtered_df.empty:
+        st.error("No issue found in this project.")
+        return
+
     create_count_of_created_issue_view(filtered_df)
     create_count_of_closed_issue_view(filtered_df)
     util.show_table("Detail", df)
