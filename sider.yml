@@ -7,16 +7,16 @@
 linter:
 
 #   # Flake8 example. See https://help.sider.review/tools/python/flake8
-#   flake8:
-#     root_dir: project/
-#     dependencies:
-#       - flake8-bugbear
-#       - flake8-builtins==1.4.1
-#       - git+https://github.com/PyCQA/flake8-import-order.git@51e16f33065512afa1a85a20b2c2d3be768f78ea
-#       - { name: "flake8-docstrings", version: "==1.6.0" }
-#     target: src/
-#     config: config/.flake8
-#     parallel: false
+   flake8:
+     root_dir: project/
+     dependencies:
+       - flake8-bugbear
+       - flake8-builtins==1.4.1
+       - git+https://github.com/PyCQA/flake8-import-order.git@51e16f33065512afa1a85a20b2c2d3be768f78ea
+       - { name: "flake8-docstrings", version: "==1.6.0" }
+     target: src/
+     config: .flake8
+     parallel: false
 
 #   # hadolint example. See https://help.sider.review/tools/dockerfile/hadolint
 #   hadolint:
