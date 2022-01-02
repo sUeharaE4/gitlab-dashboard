@@ -26,8 +26,8 @@ def make_mergerequest_df(group_id: int, *, state: Union[str, None] = None) -> pd
     # GroupMergeRequest does not have commit info. So get from Project commits.
     # Project.commits.list() has not stats of commit so fetch each single commit.
     group_mr = client.fetch_mergerrequests_in_group(state=state)
-    pj_ids = (mr.project_id for mr in group_mr)
-    id_pj_map = {pj_id: client.fetch_single_project(pj_id) for pj_id in pj_ids}
+    id_pj_map = {pj.id: pj for pj in client.fetch_projects_in_group([mr.project_id for mr in group_mr])}
+
     mergerequests = []
     for mr in group_mr:
         tmp_mergerequest = mr.__dict__["_attrs"].copy()
