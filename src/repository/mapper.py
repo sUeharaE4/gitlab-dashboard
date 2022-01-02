@@ -67,8 +67,8 @@ class GitlabClient:
     def fetch_mergerrequests_in_group(self, *, state: Union[str, None] = None) -> list[MergeRequest]:
         group_mr = self.fetch_group_mergerequests(state=state)
         pj_in_group = self.fetch_projects_in_group([mr.project_id for mr in group_mr])
-        pj_id_name_map = {pj.id: pj.name for pj in pj_in_group}
-        return [pj_id_name_map[mr.project_id].mergerequests.get(mr.iid) for mr in group_mr]
+        id_pj_map = {pj.id: pj for pj in pj_in_group}
+        return [id_pj_map[mr.project_id].mergerequests.get(mr.iid) for mr in group_mr]
 
     def fetch_single_project(self, project_id: int) -> Project:
         return self.gl.projects.get(project_id)
