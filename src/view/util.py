@@ -154,7 +154,7 @@ def create_time_count_chart(df: pd.DataFrame, datetime_col: str, unit: str, colo
 
     tmp_df = df.copy()
     tmp_df[datetime_col] = to_datetime(tmp_df[datetime_col])
-    tool_tips = ["count"]
+    tool_tips = ["count", datetime_col]
     if color_col:
         tool_tips.append(color_col)
         items = set(tmp_df[color_col].to_list())
