@@ -10,7 +10,7 @@ services:
       - 8501:8501
   web-test:
     image: 'gitlab/gitlab-ee:latest'
-    restart: always
+    # restart: always
     hostname: 'localhost'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
