@@ -160,7 +160,7 @@ def create_time_count_chart(df: pd.DataFrame, datetime_col: str, unit: str, colo
         items = set(tmp_df[color_col].to_list())
         agg_dfs = []
         for item in items:
-            tmp_agg = aggregate(tmp_df[tmp_df[color_col] == item], datetime_col, unit)
+            tmp_agg = aggregate(tmp_df.query(f"{color_col} == '{item}'"), datetime_col, unit)
             tmp_agg[color_col] = item
             agg_dfs.append(tmp_agg)
         agg_df = pd.concat(agg_dfs)
