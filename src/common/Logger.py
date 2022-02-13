@@ -143,7 +143,7 @@ class CustomLogger(logging.Logger):
             super().critical(msg, *args, **logging_kwargs)
 
     @staticmethod
-    def split_filepath(filepath: str, split_str: str = str(Const.SRC_ROOT)) -> str:
+    def split_filepath(filepath: str, split_str: str = None) -> str:
         r"""Drop part of filepath to make short massage.
 
         Parameters
@@ -151,26 +151,28 @@ class CustomLogger(logging.Logger):
         filepath
             path of function definition python file.
         split_str
-            drop target strings. need not / or \, by default str(Const.SRC_ROOT)
+            drop target strings. need not / or \, if None use str(Const.SRC_ROOT)
 
         Returns
         -------
         str
             Dropped massage.
         """
+        if split_str is None:
+            split_str = str(Const.SRC_ROOT)
         dropped_path = filepath.split(split_str)[-1]
         return os.path.join(*dropped_path.split(os.sep))
 
 
 class CustomFilter(logging.Filter):
-    """Filter for output infomation of logging caller."""
+    """Filter for output information of logging caller."""
 
     def filter(self, record: logging.LogRecord) -> bool:
-        """Set caller infomation."""
+        """Set caller information."""
         record.real_filename = getattr(record, "real_filename", record.filename)
         record.real_funcName = getattr(record, "real_funcName", record.funcName)
         record.real_lineno = getattr(record, "real_lineno", record.lineno)
-        return True
+        return super().filter(record)
 
 
 def get_logger(name: str = None, level: int = Const.LOG_LEVEL, log_path: Union[Path, str] = None) -> CustomLogger:
