@@ -16,7 +16,7 @@ def make_mergerequest_df(
     *,
     state: Union[str, None] = None,
     target_pj_names: Union[list[str], None] = None,
-    from_streamlit_view: bool = False
+    from_streamlit_view: bool = False,
 ) -> pd.DataFrame:
     """Make dataset of group mergerequest.
 

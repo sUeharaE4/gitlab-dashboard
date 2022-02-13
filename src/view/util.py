@@ -20,7 +20,7 @@ def show_table(
     editable: bool = False,
     use_checkbox: bool = False,
     check_box_selection_mode="single",
-    fit_columns_on_grid_load=False
+    fit_columns_on_grid_load=False,
 ) -> dict:
     """Show streamlit AgGrid table."""
     st.markdown(markdown_title)
