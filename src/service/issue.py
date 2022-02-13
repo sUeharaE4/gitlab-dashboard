@@ -4,9 +4,13 @@ from typing import Union
 import pandas as pd
 
 from common import util
+from common.Logger import get_logger, logging_start_end
 from repository.mapper import GitlabClient
 
+logger = get_logger()
 
+
+@logging_start_end(logger)
 def make_issue_df(
     group_id: int, *, state: Union[str, None] = None, labels: Union[list[str], None] = None
 ) -> pd.DataFrame:
