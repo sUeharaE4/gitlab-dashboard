@@ -1,10 +1,30 @@
 """Create issue view."""
+import copy
+
 import altair as alt
 import pandas as pd
 import streamlit as st
 
 from service.mergerequest import make_mergerequest_df
 from view import util
+
+size_view_tooltip = [
+    "title",
+    "project_name",
+    "state",
+    "target_branch",
+    "source_branch",
+    "author-username",
+    "merged_by-username",
+    "user_notes_count",
+    "total_commits",
+    "changes_count",
+    "total_additions",
+    "total_deletions",
+    "created_at",
+    "merged_at",
+    "closed_at",
+]
 
 
 def create_mergerequest_view(group_id: int):
@@ -55,6 +75,11 @@ def create_size_view(mergerequest_df: pd.DataFrame):
     df["mean_changes"] = df["total_changes"] / df["total_commits"]
     df["mean_additions"] = df["total_additions"] / df["total_commits"]
     df["mean_deletions"] = df["total_deletions"] / df["total_commits"]
+
+    # if target project never merged requests, merged_by-username does not exists.
+    tooltip = copy.deepcopy(size_view_tooltip)
+    if "merged_by-username" not in df.columns:
+        tooltip.remove("merged_by-username")
     chart = (
         alt.Chart(df)
         .mark_point()
@@ -63,23 +88,7 @@ def create_size_view(mergerequest_df: pd.DataFrame):
             alt.Y("mean_change_files", title="mean change files(sum of change files / commits)"),
             color="project_name",
             size=alt.Size("user_notes_count", bin=True),
-            tooltip=[
-                "title",
-                "project_name",
-                "state",
-                "target_branch",
-                "source_branch",
-                "author-username",
-                "merged_by-username",
-                "user_notes_count",
-                "total_commits",
-                "changes_count",
-                "total_additions",
-                "total_deletions",
-                "created_at",
-                "merged_at",
-                "closed_at",
-            ],
+            tooltip=tooltip,
         )
     ).interactive()
     st.altair_chart(chart, use_container_width=True)
