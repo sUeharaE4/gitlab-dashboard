@@ -167,12 +167,12 @@ class CustomLogger(logging.Logger):
 class CustomFilter(logging.Filter):
     """Filter for output information of logging caller."""
 
-    def filter(self, record: logging.LogRecord) -> bool:
+    def filter(self, record: logging.LogRecord) -> bool:  # noqa: A003
         """Set caller information."""
         record.real_filename = getattr(record, "real_filename", record.filename)
         record.real_funcName = getattr(record, "real_funcName", record.funcName)
         record.real_lineno = getattr(record, "real_lineno", record.lineno)
-        return super().filter(record)
+        return True
 
 
 def get_logger(name: str = None, level: int = Const.LOG_LEVEL, log_path: Union[Path, str] = None) -> CustomLogger:
