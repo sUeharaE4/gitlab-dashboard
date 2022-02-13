@@ -20,7 +20,7 @@ def show_table(
     editable: bool = False,
     use_checkbox: bool = False,
     check_box_selection_mode="single",
-    fit_columns_on_grid_load=False
+    fit_columns_on_grid_load=False,
 ) -> dict:
     """Show streamlit AgGrid table."""
     st.markdown(markdown_title)
@@ -154,13 +154,13 @@ def create_time_count_chart(df: pd.DataFrame, datetime_col: str, unit: str, colo
 
     tmp_df = df.copy()
     tmp_df[datetime_col] = to_datetime(tmp_df[datetime_col])
-    tool_tips = ["count"]
+    tool_tips = ["count", datetime_col]
     if color_col:
         tool_tips.append(color_col)
         items = set(tmp_df[color_col].to_list())
         agg_dfs = []
         for item in items:
-            tmp_agg = aggregate(tmp_df[tmp_df[color_col] == item], datetime_col, unit)
+            tmp_agg = aggregate(tmp_df.query(f"{color_col} == '{item}'"), datetime_col, unit)
             tmp_agg[color_col] = item
             agg_dfs.append(tmp_agg)
         agg_df = pd.concat(agg_dfs)

@@ -8,15 +8,19 @@ from stqdm import stqdm
 from tqdm import tqdm
 
 from common import util
+from common.Logger import get_logger, logging_start_end
 from repository.mapper import GitlabClient
 
+logger = get_logger()
 
+
+@logging_start_end(logger)
 def make_mergerequest_df(
     group_id: int,
     *,
     state: Union[str, None] = None,
     target_pj_names: Union[list[str], None] = None,
-    from_streamlit_view: bool = False
+    from_streamlit_view: bool = False,
 ) -> pd.DataFrame:
     """Make dataset of group mergerequest.
 
@@ -47,6 +51,7 @@ def make_mergerequest_df(
 
     mergerequests = []
     for mr in pg_bar(group_mr, desc="Collect commits from MRs"):
+        logger.debug(f"Collect commits from merge requests {mr.title=}")
         tmp_mergerequest = mr.__dict__["_attrs"].copy()
         tmp_mergerequest["group_id"] = group_id
         util.flatten_dict_in_dict(tmp_mergerequest)
@@ -64,7 +69,9 @@ def __make_commit_stats(mr_commits: list[ProjectCommit], project: Project) -> di
     mr_commit_stat["total_deletions"] = 0
     mr_commit_stat["total_changes"] = 0
 
-    for mr_commit in mr_commits:
+    commit_count = len(mr_commits)
+    for i, mr_commit in enumerate(mr_commits):
+        logger.debug(f"Fetch commit from this merge requests {i+1}/{commit_count}")
         commit = project.commits.get(mr_commit.short_id)
         mr_commit_stat["total_changed_file_count"] += len(mr_commit.diff())
         stats = commit.stats

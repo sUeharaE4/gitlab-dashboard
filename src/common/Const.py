@@ -1,4 +1,5 @@
 """Provide common const values."""
+import logging
 import os
 import sys
 from pathlib import Path
@@ -13,6 +14,8 @@ SRC_ROOT = Path(__file__).parents[1]
 APP_PROP_PATH = SRC_ROOT.parents[0].joinpath(__prop_name)
 SAMPLE_PROP_PATH = SRC_ROOT.parents[0].joinpath(__sample_prop_name)
 ST_CACHE_TIME_SHORT = 60 * 5
+
+LOG_LEVEL = logging.DEBUG
 
 if not APP_PROP_PATH.exists():
     err = errors.SettingNotFoundError(APP_PROP_PATH, SAMPLE_PROP_PATH)
