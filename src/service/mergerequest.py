@@ -36,6 +36,7 @@ def make_mergerequest_df(
     pd.DataFrame
         DataFrame each row has single mergerequest infomation.
     """
+    # TODO: get each commit info per merge requests to keep commiter information and aggregate by id at view layer.
     client = GitlabClient(group_id)
     pg_bar = tqdm
     if from_streamlit_view:
@@ -63,19 +64,52 @@ def make_mergerequest_df(
 
 
 def __make_commit_stats(mr_commits: list[ProjectCommit], project: Project) -> dict:
-    mr_commit_stat = {"total_commits": len(mr_commits)}
-    mr_commit_stat["total_changed_file_count"] = 0
-    mr_commit_stat["total_additions"] = 0
-    mr_commit_stat["total_deletions"] = 0
-    mr_commit_stat["total_changes"] = 0
+    def agg_diff(commit_diffs: list[dict]) -> dict[str, dict[str, int]]:
+        diffs = dict()
+        for diff in commit_diffs:
+            if diff["deleted_file"]:
+                continue
+            file_name = diff["new_path"]
+            diff_lines = diff["diff"].split("\n")
+            add_lines = len(list(filter(lambda s: s.startswith("+"), diff_lines)))
+            del_lines = len(list(filter(lambda s: s.startswith("-"), diff_lines)))
+            diffs[file_name] = {"add": add_lines, "del": del_lines}
+        return diffs
+
+    def merge_diff(total_diff: dict, new_diff: dict):
+        for file_name, diff in new_diff.items():
+            if file_name not in total_diff:
+                total_diff[file_name] = dict()
+            add_lines = total_diff[file_name].get("add", 0) + diff["add"]
+            del_lines = total_diff[file_name].get("del", 0) + diff["del"]
+            change_cnt = total_diff[file_name].get("change_cnt", 0) + 1
+            total_diff[file_name]["add"] = add_lines
+            total_diff[file_name]["del"] = del_lines
+            total_diff[file_name]["change_cnt"] = change_cnt
+
+    # NOTE: this is not pythonic...
+    mr_commit_stat: dict[str, Union[int, dict]] = {"total_commits": len(mr_commits)}
+    total_changed_file_count = 0
+    total_additions = 0
+    total_deletions = 0
+    total_changes = 0
+    diffs: dict[str, dict[str, int]] = dict()
 
     commit_count = len(mr_commits)
     for i, mr_commit in enumerate(mr_commits):
         logger.debug(f"Fetch commit from this merge requests {i+1}/{commit_count}")
         commit = project.commits.get(mr_commit.short_id)
-        mr_commit_stat["total_changed_file_count"] += len(mr_commit.diff())
         stats = commit.stats
-        mr_commit_stat["total_additions"] += stats["additions"]
-        mr_commit_stat["total_deletions"] += stats["deletions"]
-        mr_commit_stat["total_changes"] += stats["total"]
+        total_additions += stats["additions"]
+        total_deletions += stats["deletions"]
+        total_changes += stats["total"]
+        total_changed_file_count += len(mr_commit.diff())
+
+        merge_diff(diffs, agg_diff(commit.diff()))
+
+    mr_commit_stat["total_additions"] = total_additions
+    mr_commit_stat["total_deletions"] = total_deletions
+    mr_commit_stat["total_changes"] = total_changes
+    mr_commit_stat["total_changed_file_count"] = total_changed_file_count
+    mr_commit_stat["diff"] = diffs
     return mr_commit_stat
