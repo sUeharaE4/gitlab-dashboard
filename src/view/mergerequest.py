@@ -1,5 +1,6 @@
 """Create issue view."""
 import copy
+from collections import defaultdict as dd
 
 import altair as alt
 import pandas as pd
@@ -113,11 +114,9 @@ def create_changed_amount_view(merge_request_df: pd.DataFrame):
     target_projects = sorted(set(df["project_name"]))
     view_target_project = st.selectbox("Select target project you want to see graphs", target_projects, 0)
     df = df[df["project_name"] == view_target_project]
-    total_diffs = dict()
+    total_diffs = dd(dict)
     for commit_diff in df["diff"].to_list():
         for file_path, diff in commit_diff.items():
-            if file_path not in total_diffs:
-                total_diffs[file_path] = dict()
             total_diffs[file_path]["add"] = total_diffs[file_path].get("add", 0) + diff["add"]
             total_diffs[file_path]["del"] = total_diffs[file_path].get("del", 0) + diff["del"]
             total_diffs[file_path]["change_cnt"] = total_diffs[file_path].get("change_cnt", 0) + diff["change_cnt"]
