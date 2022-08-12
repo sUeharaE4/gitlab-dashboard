@@ -114,12 +114,7 @@ def create_changed_amount_view(merge_request_df: pd.DataFrame):
     target_projects = sorted(set(df["project_name"]))
     view_target_project = st.selectbox("Select target project you want to see graphs", target_projects, 0)
     df = df[df["project_name"] == view_target_project]
-    total_diffs = dd(dict)
-    for commit_diff in df["diff"].to_list():
-        for file_path, diff in commit_diff.items():
-            total_diffs[file_path]["add"] = total_diffs[file_path].get("add", 0) + diff["add"]
-            total_diffs[file_path]["del"] = total_diffs[file_path].get("del", 0) + diff["del"]
-            total_diffs[file_path]["change_cnt"] = total_diffs[file_path].get("change_cnt", 0) + diff["change_cnt"]
+    total_diffs = __sum_diffs(df["diff"].to_list())
     diff_df = pd.DataFrame(
         [
             {"file_path": k, "add": v["add"], "del": v["del"], "change_cnt": v["change_cnt"]}
@@ -150,3 +145,14 @@ def create_changed_amount_view(merge_request_df: pd.DataFrame):
 @st.cache(allow_output_mutation=True, suppress_st_warning=True)
 def __fetch_mergerequest_dataset(group_id) -> pd.DataFrame:
     return make_mergerequest_df(group_id, from_streamlit_view=True)
+
+
+def __sum_diffs(diffs: list[dict]):
+    """Sum git diffs."""
+    total_diffs = dd(dict)
+    for commit_diff in diffs:
+        for file_path, diff in commit_diff.items():
+            total_diffs[file_path]["add"] = total_diffs[file_path].get("add", 0) + diff["add"]
+            total_diffs[file_path]["del"] = total_diffs[file_path].get("del", 0) + diff["del"]
+            total_diffs[file_path]["change_cnt"] = total_diffs[file_path].get("change_cnt", 0) + diff["change_cnt"]
+    return total_diffs

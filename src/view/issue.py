@@ -7,6 +7,7 @@ import pandas as pd
 import streamlit as st
 
 from common import Const
+from common import util as common_util
 from service.issue import make_issue_df
 from view import util
 
@@ -117,12 +118,11 @@ def __filter_issues(
         df = df[df["state"] == state]
     if project_ids:
         df = df[df["project_id"].isin(project_ids)]
-    if due_date:
-        if len(due_date) > 1:
-            df = df[df["due_date"] > due_date]
-            df = df[df["due_date"] < due_date]
-        else:
-            df = df[df["due_date"] < due_date]
+    if common_util.len_nullable_list(due_date) > 1:
+        df = df[df["due_date"] > due_date[0]]
+        df = df[df["due_date"] < due_date[1]]
+    elif common_util.len_nullable_list(due_date) == 1:
+        df = df[df["due_date"] < due_date]
     if labels:
         df = df[df["labels"].isin(labels)]
     if isinstance(df, pd.Series):
