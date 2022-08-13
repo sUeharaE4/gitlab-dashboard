@@ -1,7 +1,8 @@
 {
   "python.pythonPath": "${workspaceRoot}/.venv/bin/python",
   "python.defaultInterpreterPath": "${workspaceRoot}/.venv/bin",
-  "python.envFile": "${workspaceFolder}/.venv",
+  "python.venvPath": "${workspaceRoot}/.venv",
+  "python.envFile": "${workspaceFolder}/.env",
   "python.languageServer": "Pylance",
   "python.formatting.provider": "black",
   "python.linting.flake8Enabled": true,
@@ -35,6 +36,7 @@
   "[python]": {
     "editor.insertSpaces": true,
     "editor.tabSize": 4,
+    "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
       "source.organizeImports": true
     }
@@ -46,5 +48,6 @@
   "files.watcherExclude": {
     "**/.git/**": true,
     "**/__pycache__": true
-  }
+  },
+  "python.analysis.extraPaths": []
 }
