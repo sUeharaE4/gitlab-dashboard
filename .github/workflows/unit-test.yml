@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - make-ci-flow
   pull_request:
     branches:
       - main
@@ -32,4 +33,5 @@ jobs:
         uses: paambaati/codeclimate-action@v3.0.0
         env:
           CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
-        coverageLocations: ${{github.workspace}}/build/tests/coverage.xml
+        with:
+          coverageLocations: ${{github.workspace}}/build/tests/coverage.xml
