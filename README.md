@@ -1,4 +1,5 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/09cde8ffb601f6c13bdf/maintainability)](https://codeclimate.com/github/sUeharaE4/gitlab-dashboard/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/09cde8ffb601f6c13bdf/test_coverage)](https://codeclimate.com/github/sUeharaE4/gitlab-dashboard/test_coverage)
 
 # Gitlab-Dashboard
 
