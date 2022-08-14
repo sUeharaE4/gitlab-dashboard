@@ -7,11 +7,6 @@ from common.errors import ResourceNotFoundError
 from repository.mapper import GitlabClient
 
 
-class DummyGitlab:
-    def __init__(self, mocker):
-        self.gl = mocker.Mock(spec=GitlabClient)
-
-
 class TestGitlabClient:
     @pytest.fixture
     def init_client(self, mocker):
@@ -22,7 +17,7 @@ class TestGitlabClient:
         self.client = self.make_dummy_client(mocker, False)
 
     def test_no_group(self, mocker):
-        # TODO: 一つ一つpatchして実際にGitlabClientのコンストラクタ呼ばないとダメ
+        """Test for no group found in the group_id."""
         mock_gl = mocker.Mock(spec=Gitlab)
         mock_goup_manager = mocker.Mock(spec=GroupManager)
         mock_gl.groups = mock_goup_manager
