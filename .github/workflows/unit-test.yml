@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - make-ci-flow
   pull_request:
     branches:
       - main
@@ -15,10 +16,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Make env files
+        run: |
+          cp ${{github.workspace}}/.app_prop_sample ${{github.workspace}}/.app_prop_test
+          echo "APP_EXEC_MODE=test" > ${{github.workspace}}/.env
+          echo "PYTHONPATH=./src" >> ${{github.workspace}}/.env
+          while read line;
+          do
+            echo $line >> $GITHUB_ENV
+          done<${{github.workspace}}/.env
       - name: Set up Python 3.9
         uses: actions/setup-python@v1
         with:
           python-version: 3.9
+          cache: 'poetry'
       - name: Install Poetry
         run: |
           curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
@@ -26,10 +37,10 @@ jobs:
         run: echo "$HOME/.poetry/bin" >> $GITHUB_PATH
       - name: Install Dependencies
         run: poetry install
-      - name: Run Tests
-        run: poetry run task test_cov
-      - name: Publish coverage report to Code Climate
+      - name: Test & publish code coverage
         uses: paambaati/codeclimate-action@v3.0.0
         env:
           CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
-        coverageLocations: ${{github.workspace}}/build/tests/coverage.xml
+        with:
+          coverageCommand: poetry run task test_cov
+          coverageLocations: ${{github.workspace}}/build/tests/coverage.xml
