@@ -45,3 +45,10 @@ This application reference some environment variables. Please set these vars.
 export APP_EXEC_MODE=test
 export GITLAB_HOME=/svr/gitlab
 ```
+
+### For developer
+make `.env` file and set like this to refer `PYTHONPATH` from VSCode.
+
+```.env
+PYTHONPATH=./src
+```

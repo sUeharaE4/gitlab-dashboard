@@ -1,0 +1,35 @@
+name: unit-test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  pytest:
+    name: Run tests with pytest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+      - name: Install Poetry
+        run: |
+          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+      - name: Add path for Poetry
+        run: echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+      - name: Install Dependencies
+        run: poetry install
+      - name: Run Tests
+        run: poetry run task test_cov
+      - name: Publish coverage report to Code Climate
+        uses: paambaati/codeclimate-action@v3.0.0
+        env:
+          CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
+        coverageLocations: ${{github.workspace}}/build/tests/coverage.xml

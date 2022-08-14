@@ -1,5 +1,6 @@
 """Provide utility functions."""
 from typing import Any, Union
+from collections.abc import Iterable
 
 
 def flatten_dict_in_dict(base_dict: dict[str, Union[str, dict[str, Any]]]):
@@ -14,6 +15,13 @@ def flatten_dict_in_dict(base_dict: dict[str, Union[str, dict[str, Any]]]):
     for drop_key in drop_keys:
         del base_dict[drop_key]
     base_dict.update(add_dict)
+
+
+def len_nullable_list(itr: Union[Iterable[Any], None]):
+    """Count elements of iterable objects. If object is None, return 0."""
+    if itr:
+        return len(itr)
+    return 0
 
 
 def __flatten_dict(key: str, value: Any, drop_keys: list[str], add_dict: dict[str, Any]):

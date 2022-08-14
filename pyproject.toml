@@ -7,7 +7,7 @@ authors = ["sUeharaE4"]
 [tool.taskipy.tasks]
 start = { cmd = "cd src && streamlit run main.py", help = "launch server" }
 test = { cmd = "pytest -vv --durations=0 --log-cli-level=10", help = "runs all tests" }
-test_cov = { cmd = "coverage run -m pytest -vv --durations=0 --junitxml=build/tests/result.xml --cov=tests --cov-report=xml:build/tests/coverage.xml --cov-report=html:build/tests/htmlcov --html=build/tests/report.html", help = "runs all tests and make coverage report" }
+test_cov = { cmd = "coverage run -m pytest -vv --durations=0 --junitxml=build/tests/result.xml --cov=src --cov-report=xml:build/tests/coverage.xml --cov-report=html:build/tests/htmlcov --html=build/tests/report.html", help = "runs all tests and make coverage report" }
 sphinx = { cmd = "task sphinx_apidoc && task sphinx_build", help = "make sphinx doc" }
 check_style = { cmd = "task check_flake8 && task check_flake8_with_output && task check_pyright && task check_mypy", help = "check code style" }
 check_complexity = { cmd = "cd src && docker run --rm --env CODECLIMATE_CODE=`pwd` --env CODECLIMATE_DEBUG=1 -v `pwd`:/code -v /var/run/docker.sock:/var/run/docker.sock -v /tmp/cc:/tmp/cc codeclimate/codeclimate analyze", help = "check_code complexity use docker image of code climate. this command needs docker." }
