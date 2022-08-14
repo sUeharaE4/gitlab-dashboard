@@ -16,6 +16,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Make env files
+        run: |
+          cp ${{github.workspace}}/.app_prop_sample ${{github.workspace}}/.app_prop_test
+          echo "APP_EXEC_MODE=test" > ${{github.workspace}}/.env
+          echo "PYTHONPATH=./src" >> ${{github.workspace}}/.env
       - name: Set up Python 3.9
         uses: actions/setup-python@v1
         with:
