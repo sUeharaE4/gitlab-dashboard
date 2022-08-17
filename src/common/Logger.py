@@ -211,8 +211,8 @@ def get_logger(name: str = None, level: int = Const.LOG_LEVEL, log_path: Union[P
     logger.addHandler(console_handler)
 
     if log_path:
-        log_dir = os.path.dirname(log_path)
-        os.makedirs(log_dir, exist_ok=True)
+        log_dir = Path(log_path).parents[0]
+        log_dir.mkdir(parents=True, exist_ok=True)
         file_handler = logging.handlers.TimedRotatingFileHandler(
             log_path, encoding="utf-8", when="MIDNIGHT", backupCount=7
         )
