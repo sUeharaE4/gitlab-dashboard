@@ -30,12 +30,12 @@ class CustomLogger(logging.Logger):
 
     def set_stream_when_none(self) -> None:
         """Set stream handler if this logger hasn't it."""
-        for handler in self.handlers:
+        st_handlers = [h for h in self.handlers if isinstance(h, logging.StreamHandler) and h.stream is None]
+        for handler in st_handlers:
+            # FileHandler is subclass of StreamHandler so check before set stream stdout
             if isinstance(handler, logging.FileHandler):
                 continue
-            if isinstance(handler, logging.StreamHandler):
-                if handler.stream is None:
-                    handler.stream = sys.stdout
+            handler.stream = sys.stdout
 
     def __find_caller(self, wrapper_depth: int) -> dict:
         def make_dict(filename, funcname, lineno) -> dict:

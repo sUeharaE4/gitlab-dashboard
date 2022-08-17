@@ -1,4 +1,5 @@
 """Provide service for issue dataset."""
+from collections import defaultdict
 from typing import Union
 
 import pandas as pd
@@ -78,8 +79,6 @@ def __make_commit_stats(mr_commits: list[ProjectCommit], project: Project) -> di
 
     def merge_diff(total_diff: dict, new_diff: dict):
         for file_name, diff in new_diff.items():
-            if file_name not in total_diff:
-                total_diff[file_name] = dict()
             add_lines = total_diff[file_name].get("add", 0) + diff["add"]
             del_lines = total_diff[file_name].get("del", 0) + diff["del"]
             change_cnt = total_diff[file_name].get("change_cnt", 0) + 1
@@ -93,7 +92,7 @@ def __make_commit_stats(mr_commits: list[ProjectCommit], project: Project) -> di
     total_additions = 0
     total_deletions = 0
     total_changes = 0
-    diffs: dict[str, dict[str, int]] = dict()
+    diffs: defaultdict[str, dict[str, int]] = defaultdict(dict)
 
     commit_count = len(mr_commits)
     for i, mr_commit in enumerate(mr_commits):
