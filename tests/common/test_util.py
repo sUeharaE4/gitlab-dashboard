@@ -2,18 +2,8 @@ from common import util
 
 
 def test_flatten_dict_in_dict():
-    nest = {
-        "no-change": "no-change-value",
-        "author": {
-            "id": 1,
-            "name": "name"
-        }
-    }
-    expect = {
-        "no-change": "no-change-value",
-        "author-id": 1,
-        "author-name": "name"
-    }
+    nest = {"no-change": "no-change-value", "author": {"id": 1, "name": "name"}}
+    expect = {"no-change": "no-change-value", "author-id": 1, "author-name": "name"}
     util.flatten_dict_in_dict(nest)
     assert nest == expect
 
