@@ -11,6 +11,6 @@ build/docs/*
 build/docs/source/*
 !build/docs/source/conf.py
 !build/docs/source/index.rst
-.coverage
+.coverage*
 .app_prop*
 !.app_prop_sample
