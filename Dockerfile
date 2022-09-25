@@ -4,7 +4,7 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /work
 
 ENV POETRY_HOME=/opt/poetry
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+RUN curl -sSL https://install.python-poetry.org | python -
 RUN cd /usr/local/bin && ln -s /opt/poetry/bin/poetry
 
 COPY pyproject.toml* poetry.lock* ./
