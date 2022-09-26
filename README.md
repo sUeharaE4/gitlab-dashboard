@@ -15,7 +15,7 @@ If you don't have poetry, you have to install(python is also required). See deta
 
 Linux:
 ```bash
-curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+curl -sSL https://install.python-poetry.org | python -
 ```
 
 Windows:(use PowerShell)
